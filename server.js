@@ -15,7 +15,7 @@ const app = express();
 // }));
  
 app.use(cors({
-  origin: 'http://localhost:5173', // Vite's default dev server URL
+  origin: 'https://final-osamedic.vercel.app/', // Vite's default dev server URL
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   credentials: true,
 }));
