@@ -274,14 +274,6 @@ db.run(`DROP TABLE IF EXISTS test_details`)
  `);
 
 
- app.get('/api/test', (req, res) => {
-  try {
-    res.json({ message: 'API Test successful!' });
-  } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error', details: error.message });
-  }
-});
-
 // User registration endpoint
 app.post('/signup', async (req, res) => {
   const { email, password } = req.body;
