@@ -10,7 +10,7 @@ const app = express();
 
  
 app.use(cors({
-  origin: 'https://final-osamedic.vercel.app/', // Vite's default dev server URL
+  origin: 'https://final-osamedic.vercel.app', // Vite's default dev server URL
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH','HEAD'],
   credentials: true,
   optionsSuccessStatus:200
