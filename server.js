@@ -15,7 +15,7 @@ app.use(cors({
   credentials: true,
   optionsSuccessStatus:200
 }));
-const db = new sqlite3.Database('./database.db');
+const db = new sqlite3.Database('/tmp/database.db');  // Use the /tmp directory on Vercel
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
