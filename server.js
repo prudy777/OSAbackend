@@ -7,17 +7,13 @@ const nodemailer = require('nodemailer');
 const twilio = require('twilio');
 require('dotenv').config();
 const app = express();
-// app.use(cors({
-//   origin: 'https://frontend-osa.onrender.com', // Allow requests from your frontend URL
-//   methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH','HEAD'], // Specify allowed HTTP methods
-//   credentials: true ,// If you need to send cookies or authentication headers
-//   optionsSuccessStatus: 200 // Some legacy browsers choke on 204
-// }));
+
  
 app.use(cors({
   origin: 'https://final-osamedic.vercel.app/', // Vite's default dev server URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH','HEAD'],
   credentials: true,
+  optionsSuccessStatus:200
 }));
 const db = new sqlite3.Database('./database.db');
 app.use(express.json());
@@ -277,6 +273,14 @@ db.run(`DROP TABLE IF EXISTS test_details`)
    )
  `);
 
+
+ app.get('/api/test', (req, res) => {
+  try {
+    res.json({ message: 'API Test successful!' });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error', details: error.message });
+  }
+});
 
 // User registration endpoint
 app.post('/signup', async (req, res) => {
