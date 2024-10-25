@@ -13,3 +13,4 @@ node_modules/
 # Ignore build artifacts (optional, depending on your project setup)
 dist/
 build/
+database.db
