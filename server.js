@@ -77,7 +77,6 @@ app.post('/login', async (req, res) => {
 });
 
 // Patient Registration
-const Patient = require('./models/patient');
 
 app.post('/register', async (req, res) => {
   try {
