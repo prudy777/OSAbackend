@@ -92,9 +92,8 @@ app.post('/register', async (req, res) => {
     if (!patientData.patient_no) {
       const lastPatient = await Patient.findOne().sort({ _id: -1 }); // Get the last added patient
 
-      // Ensure lastPatient and lastPatient.patient_no are valid
       if (lastPatient && lastPatient.patient_no) {
-        const lastNumber = parseInt(lastPatient.patient_no.replace(/\D/g, "")) || 1000; // Extract numeric part
+        const lastNumber = parseInt(lastPatient.patient_no.replace(/\D/g, "")) || 1000;
         patientData.patient_no = `P${lastNumber + 1}`;
       } else {
         patientData.patient_no = 'P1000'; // Default for the first patient
@@ -112,9 +111,15 @@ app.post('/register', async (req, res) => {
     res.status(201).send('Patient registered successfully');
   } catch (err) {
     console.error('Error during registration:', err);
+
+    if (err.code === 11000 && err.keyPattern && err.keyPattern.patient_no) {
+      return res.status(400).send(`A patient with the number ${err.keyValue.patient_no} already exists.`);
+    }
+
     res.status(500).send('Registration failed due to server error');
   }
 });
+
 
 
 
