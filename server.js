@@ -77,6 +77,8 @@ app.post('/login', async (req, res) => {
 });
 
 // Patient Registration
+const Patient = require('./models/patient');
+
 app.post('/register', async (req, res) => {
   try {
     const patientData = req.body;
@@ -88,6 +90,12 @@ app.post('/register', async (req, res) => {
       patientData.home_service = true;
     }
 
+    // Generate a unique patient_no if not provided
+    if (!patientData.patient_no) {
+      const lastPatient = await Patient.findOne().sort({ _id: -1 }); // Get the last added patient
+      patientData.patient_no = lastPatient ? `P${parseInt(lastPatient.patient_no.slice(1)) + 1}` : 'P1000';
+    }
+
     const newPatient = new Patient(patientData);
     await newPatient.save();
 
@@ -95,10 +103,11 @@ app.post('/register', async (req, res) => {
     sendEmail('ailemendaniel76@gmail.com', 'Test Registration Confirmation', emailMessage);
     res.status(201).send('Patient registered successfully');
   } catch (err) {
-    console.error('Error during registration:', err); // Log the full error
+    console.error('Error during registration:', err);
     res.status(500).send('Registration failed due to server error');
   }
 });
+
 
 // Get all patients
 app.get('/patients', async (req, res) => {
