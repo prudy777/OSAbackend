@@ -10,7 +10,7 @@ const app = express();
 
 app.use(cors({
   origin: 'https://final-osamedic.vercel.app', // Your frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD'],
   credentials: true,
 }));
 app.use(express.json());
@@ -77,7 +77,6 @@ app.post('/login', async (req, res) => {
 });
 
 // Patient Registration
-
 app.post('/register', async (req, res) => {
   try {
     const patientData = req.body;
@@ -92,20 +91,31 @@ app.post('/register', async (req, res) => {
     // Generate a unique patient_no if not provided
     if (!patientData.patient_no) {
       const lastPatient = await Patient.findOne().sort({ _id: -1 }); // Get the last added patient
-      patientData.patient_no = lastPatient ? `P${parseInt(lastPatient.patient_no.slice(1)) + 1}` : 'P1000';
+
+      // Ensure lastPatient and lastPatient.patient_no are valid
+      if (lastPatient && lastPatient.patient_no) {
+        const lastNumber = parseInt(lastPatient.patient_no.replace(/\D/g, "")) || 1000; // Extract numeric part
+        patientData.patient_no = `P${lastNumber + 1}`;
+      } else {
+        patientData.patient_no = 'P1000'; // Default for the first patient
+      }
     }
 
+    // Create and save the new patient
     const newPatient = new Patient(patientData);
     await newPatient.save();
 
+    // Send confirmation email
     const emailMessage = `Dear Osamedic Diagnostics patient,\n\nThe registration for ${patientData.first_name} ${patientData.last_name} has been received.\n\nThank you.`;
     sendEmail('ailemendaniel76@gmail.com', 'Test Registration Confirmation', emailMessage);
+
     res.status(201).send('Patient registered successfully');
   } catch (err) {
     console.error('Error during registration:', err);
     res.status(500).send('Registration failed due to server error');
   }
 });
+
 
 
 // Get all patients
